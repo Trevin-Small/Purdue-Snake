@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bgp-dark-gray {
+  background-color: #373A36;
+}
+
+.bgp-gold {
+  background-color: #CEB888;
+}
+
+.bgp-gray {
+  background-color: #9D968D;
+}
+
+.bgp-black {
+  background-color: black;
+}
