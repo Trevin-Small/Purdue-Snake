@@ -2,9 +2,9 @@ const pxToREM = 16;
 
 const Snake = ( () => {
 
-  let snake = [[8, 9], [8, 9], [8, 9], [8, 9]];
+  let snake = [[8, 9], [8, 9], [8, 9], [8, 9], [8, 9], [8, 9], [8, 9]];
   let apple = [];
-  let direction = 0;
+  let direction = 4;
   let score = 0;
 
   let gridBoxSize = 0;
