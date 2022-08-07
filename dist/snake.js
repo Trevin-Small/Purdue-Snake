@@ -2,9 +2,9 @@ const pxToREM = 16;
 
 const Snake = ( () => {
 
-  const defaultSnake = [[8, 9], [8, 9], [8, 9], [8, 9], [8, 9]];
-  let snake = [[8, 9], [8, 9], [8, 9], [8, 9], [8, 9]];
-  let apple = [];
+  const defaultSnake = [[5, 6], [5, 6], [5, 6], [5, 6], [5, 6]];
+  let snake = [[5, 6], [5, 6], [5, 6], [5, 6], [5, 6]];
+  let apple = [0, 0];
   let direction = 4;
   let score = 0;
   let isPlaying = false;
@@ -13,7 +13,7 @@ const Snake = ( () => {
 
   let gridBoxSize = 0;
   let gridBoxMargins = 2;
-  let gridDimension = 16;
+  let gridDimension = 10;
   let windowBorder = 2;
   let canvasBorder = 3;
 
@@ -26,6 +26,12 @@ const Snake = ( () => {
   ctx.lineWidth = 0;
   const keyboardContainer = document.getElementById('keyboard-container');
   const gameContainerBorders = 2 * (2 * pxToREM);
+
+  /*
+  const trainImage = new Image();
+  trainImage.src = window.location.href.split('?')[0] + "assets/boilermaker.png";
+  console.log(trainImage.src);
+  */
 
   function resize() {
     keyboardContainer.style.width = keyboardContainer.offsetHeight + "px";
@@ -63,6 +69,12 @@ const Snake = ( () => {
       ctx.rect(snake[i][0] * gridBoxSize + gridBoxMargins, snake[i][1] * gridBoxSize + gridBoxMargins, gridBoxSize - gridBoxMargins, gridBoxSize - gridBoxMargins);
       ctx.fill();
     }
+
+    ctx.beginPath();
+    //ctx.drawImage(trainImage, apple[0] * gridBoxSize, apple[1] * gridBoxSize, gridBoxSize, gridBoxSize);
+    ctx.fillStyle = 'red';
+    ctx.rect(apple[0] * gridBoxSize + gridBoxMargins, apple[1] * gridBoxSize + gridBoxMargins, gridBoxSize - gridBoxMargins, gridBoxSize - gridBoxMargins);
+    ctx.fill();
 
   }
 
@@ -173,8 +185,8 @@ const Snake = ( () => {
 
     while (!goodApple) {
 
-      apple[0] = Math.floor(Math.random() * 16);
-      apple[1] = Math.floor(Math.random() * 16);
+      apple[0] = Math.floor(Math.random() * gridDimension);
+      apple[1] = Math.floor(Math.random() * gridDimension);
 
       for (let i = 0; i < snake.length; i++) {
         if (apple[0] == snake[i][0] && apple[1] == snake[i][1]) {
@@ -240,9 +252,10 @@ const Snake = ( () => {
     }
 
     resize();
-    gameLoop();
     takeInput();
+    randomizeApple();
     drawGame();
+    gameLoop();
 
   }
 
