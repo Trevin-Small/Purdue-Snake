@@ -2,10 +2,14 @@ const pxToREM = 16;
 
 const Snake = ( () => {
 
-  let snake = [[8, 9], [8, 9], [8, 9], [8, 9], [8, 9], [8, 9], [8, 9]];
+  const defaultSnake = [[8, 9], [8, 9], [8, 9], [8, 9], [8, 9]];
+  let snake = [[8, 9], [8, 9], [8, 9], [8, 9], [8, 9]];
   let apple = [];
   let direction = 4;
   let score = 0;
+  let isPlaying = false;
+  let addSnakeSection = false;
+  let FPS = 5;
 
   let gridBoxSize = 0;
   let gridBoxMargins = 2;
@@ -17,11 +21,11 @@ const Snake = ( () => {
   const gameWindow = document.getElementById('game-window');
   const gameCanvas = document.getElementById('game-canvas');
   const textInfo = document.getElementById('text-info');
+  const scoreLabel = document.getElementById('score');
   const ctx = gameCanvas.getContext('2d');
   ctx.lineWidth = 0;
   const keyboardContainer = document.getElementById('keyboard-container');
   const gameContainerBorders = 2 * (2 * pxToREM);
-  const FPS = 4;
 
   function resize() {
     keyboardContainer.style.width = keyboardContainer.offsetHeight + "px";
@@ -42,7 +46,9 @@ const Snake = ( () => {
 
     textInfo.style.width = windowDimension - 12 + "px";
 
-    window.onresize = resize;
+    window.addEventListener("resize", () => {
+      resize();
+    });
   }
 
   function drawGame() {
@@ -65,21 +71,25 @@ const Snake = ( () => {
       if (direction != 2){
         direction = 0;
       }
+      if (!isPlaying){isPlaying = true;}
     });
     document.getElementById('right').addEventListener('click', () => {
       if (direction != 3){
         direction = 1;
       }
+      if (!isPlaying){isPlaying = true;}
     });
     document.getElementById('down').addEventListener('click', () => {
       if (direction != 0){
         direction = 2;
       }
+      if (!isPlaying){isPlaying = true;}
     });
     document.getElementById('left').addEventListener('click', () => {
       if (direction != 1){
         direction = 3;
       }
+      if (!isPlaying){isPlaying = true;}
     });
 
     document.addEventListener('keydown', (event) => {
@@ -100,53 +110,139 @@ const Snake = ( () => {
 
   function moveSnake() {
 
-    let tailIndex = snake.length - 1;
+    let newHead = [];
     switch(direction) {
       case 0:
-        snake[tailIndex][1] = snake[0][1] - 1;
-        snake[tailIndex][0] = snake[0][0];
+        newHead[0] = snake[0][0];
+        newHead[1] = snake[0][1] - 1;
         break;
       case 1:
-        snake[tailIndex][0] = snake[0][0] + 1;
-        snake[tailIndex][1] = snake[0][1];
+        newHead[0] = snake[0][0] + 1;
+        newHead[1] = snake[0][1];
         break;
       case 2:
-        snake[tailIndex][1] = snake[0][1] + 1;
-        snake[tailIndex][0] = snake[0][0];
+        newHead[0] = snake[0][0];
+        newHead[1] = snake[0][1] + 1;
         break;
       case 3:
-        snake[tailIndex][0] = snake[0][0] - 1;
-        snake[tailIndex][1] = snake[0][1];
+        newHead[0] = snake[0][0] - 1;
+        newHead[1] = snake[0][1];
         break;
     }
 
-    if (snake[tailIndex][0] < 0) {
-      snake[tailIndex][0] = gridDimension - 1;
-    } else if (snake[tailIndex][0] > gridDimension) {
-      snake[tailIndex][0] = 0;
-    } else if (snake[tailIndex][1] < 0) {
-      snake[tailIndex][1] = gridDimension - 1;
-    } else if (snake[tailIndex][1] > gridDimension) {
-      snake[tailIndex][1] = 0;
+    if (newHead[0] < 0) {
+      newHead[0] = gridDimension - 1;
+    } else if (newHead[0] > gridDimension) {
+      newHead[0] = 0;
+    } else if (newHead[1] < 0) {
+      newHead[1] = gridDimension - 1;
+    } else if (newHead[1] > gridDimension) {
+      newHead[1] = 0;
     }
 
-    snake.unshift(snake.pop(snake.length - 1));
+    snake.unshift(newHead);
+
+    if (!addSnakeSection) {
+      snake.pop(snake.length - 1);
+    } else {
+      addSnakeSection = false;
+    }
+  }
+
+  function ranIntoSelf() {
+    for (let i = 4; i < snake.length; i++) {
+      if (snake[0][0] == snake[i][0] && snake[0][1] == snake[i][1]) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function ateApple() {
+    if (snake[0][0] == apple[0] && snake[0][1] == apple[1]) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function randomizeApple() {
+
+    let goodApple = false;
+
+    while (!goodApple) {
+
+      apple[0] = Math.floor(Math.random() * 16);
+      apple[1] = Math.floor(Math.random() * 16);
+
+      for (let i = 0; i < snake.length; i++) {
+        if (apple[0] == snake[i][0] && apple[1] == snake[i][1]) {
+          break;
+        } else {
+          goodApple = true;
+          break;
+        }
+      }
+    }
+  }
+
+  function setScore(newScore) {
+    if (newScore != 0) {
+      FPS++;
+    } else {
+      FPS = 5;
+    }
+    score = newScore;
+    scoreLabel.innerHTML = "Score: "  + score;
+  }
+
+  function gameLogic() {
+
+    if (isPlaying) {
+
+      if (ranIntoSelf()) {
+
+        isPlaying = false;
+        direction = 4;
+        snake = defaultSnake;
+        randomizeApple();
+        setScore(0);
+
+      } else if (ateApple()) {
+
+        setScore(score + 1);
+        randomizeApple();
+        addSnakeSection = true;
+
+      }
+
+    } else {
+
+
+
+    }
+
   }
 
   function init() {
 
     function gameLoop() {
-      moveSnake();
-      drawGame();
+      if (isPlaying) {
+        moveSnake();
+        gameLogic();
+        drawGame();
+      }
 
       setTimeout(() => {
         gameLoop();
-      }, 1000 / FPS);
+      }, Math.floor(1000 / FPS));
     }
 
     resize();
     gameLoop();
     takeInput();
+    drawGame();
 
   }
 
@@ -155,5 +251,8 @@ const Snake = ( () => {
   }
 
 })();
+
+const COLOR = window.location.href.split('?')[1];
+document.getElementById('gameboy-body').style.backgroundColor = COLOR;
 
 Snake.init();
