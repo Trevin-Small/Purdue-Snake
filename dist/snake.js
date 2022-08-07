@@ -2,12 +2,14 @@ const pxToREM = 16;
 
 const Snake = ( () => {
 
-  const defaultSnake = [[5, 6], [5, 6], [5, 6], [5, 6], [5, 6]];
-  let snake = [[5, 6], [5, 6], [5, 6], [5, 6], [5, 6]];
+  const defaultSnake = [[5, 5], [5, 6], [5, 6], [5, 6], [5, 6]];
+  let snake = [[5, 5], [5, 6], [5, 6], [5, 6], [5, 6]];
   let apple = [0, 0];
   let direction = 4;
+  let prevDirectionMoved = 4;
   let score = 0;
-  let isPlaying = false;
+  let isPlaying = true;
+  let isHidden = false;
   let addSnakeSection = false;
   let FPS = 5;
 
@@ -17,21 +19,17 @@ const Snake = ( () => {
   let windowBorder = 2;
   let canvasBorder = 5;
 
+  const COLOR = window.location.href.split('?')[1];
+  document.getElementById('gameboy-body').style.backgroundColor = COLOR;
+
   const gameContainer = document.getElementById('game-container');
   const gameWindow = document.getElementById('game-window');
   const gameCanvas = document.getElementById('game-canvas');
-  const textInfo = document.getElementById('text-info');
   const scoreLabel = document.getElementById('score');
   const ctx = gameCanvas.getContext('2d');
   ctx.lineWidth = 0;
   const keyboardContainer = document.getElementById('keyboard-container');
   const gameContainerBorders = 2 * (2 * pxToREM);
-
-  /*
-  const trainImage = new Image();
-  trainImage.src = window.location.href.split('?')[0] + "assets/boilermaker.png";
-  console.log(trainImage.src);
-  */
 
   function resize() {
     keyboardContainer.style.width = keyboardContainer.offsetHeight + "px";
@@ -56,14 +54,23 @@ const Snake = ( () => {
   }
 
   function drawGame() {
+
     ctx.beginPath();
-    ctx.fillStyle = 'black';
+    if (isHidden) {
+      ctx.fillStyle = 'red';
+    } else {
+      ctx.fillStyle = 'black';
+    }
     ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-    for (let i = 0; i < snake.length; i++) {
+    for (let i = snake.length - 1; i >= 0; i--) {
       // outlined square X: 50, Y: 35, width/height 50
       ctx.beginPath();
-      ctx.fillStyle = 'white';
+      if (i != 0) {
+        ctx.fillStyle = 'white';
+      } else {
+        ctx.fillStyle = COLOR;
+      }
       ctx.rect(snake[i][0] * gridBoxSize + gridBoxMargins, snake[i][1] * gridBoxSize + gridBoxMargins, gridBoxSize - gridBoxMargins, gridBoxSize - gridBoxMargins);
       ctx.fill();
     }
@@ -78,28 +85,24 @@ const Snake = ( () => {
 
   function takeInput() {
     document.getElementById('up').addEventListener('click', () => {
-      if (direction != 2){
+      if (prevDirectionMoved != 2){
         direction = 0;
       }
-      if (!isPlaying){isPlaying = true;}
     });
     document.getElementById('right').addEventListener('click', () => {
-      if (direction != 3){
+      if (prevDirectionMoved != 3){
         direction = 1;
       }
-      if (!isPlaying){isPlaying = true;}
     });
     document.getElementById('down').addEventListener('click', () => {
-      if (direction != 0){
+      if (prevDirectionMoved != 0 && direction != 4){
         direction = 2;
       }
-      if (!isPlaying){isPlaying = true;}
     });
     document.getElementById('left').addEventListener('click', () => {
-      if (direction != 1){
+      if (prevDirectionMoved != 1){
         direction = 3;
       }
-      if (!isPlaying){isPlaying = true;}
     });
 
     document.addEventListener('keydown', (event) => {
@@ -120,24 +123,32 @@ const Snake = ( () => {
 
   function moveSnake() {
 
+    if (!isPlaying) return;
+
     let newHead = [];
     switch(direction) {
       case 0:
         newHead[0] = snake[0][0];
         newHead[1] = snake[0][1] - 1;
+        prevDirectionMoved = 0;
         break;
       case 1:
         newHead[0] = snake[0][0] + 1;
         newHead[1] = snake[0][1];
+        prevDirectionMoved = 1;
         break;
       case 2:
         newHead[0] = snake[0][0];
         newHead[1] = snake[0][1] + 1;
+        prevDirectionMoved = 2;
         break;
       case 3:
         newHead[0] = snake[0][0] - 1;
         newHead[1] = snake[0][1];
+        prevDirectionMoved = 3;
         break;
+      case 4:
+        return;
     }
 
     if (newHead[0] < 0) {
@@ -191,7 +202,7 @@ const Snake = ( () => {
           break;
         } else {
           goodApple = true;
-          break;
+          return;
         }
       }
     }
@@ -207,17 +218,26 @@ const Snake = ( () => {
     scoreLabel.innerHTML = "Score: "  + score;
   }
 
-  function gameLogic() {
+  function gameLoop() {
 
     if (isPlaying) {
 
+      moveSnake();
+
       if (ranIntoSelf()) {
 
-        isPlaying = false;
         direction = 4;
-        snake = defaultSnake;
+        isPlaying = false;
+        isHidden = true;
+        addSnakeSection = false;
         randomizeApple();
-        setScore(0);
+        setTimeout(() => {
+          setScore(0);
+          isPlaying = true;
+          snake = defaultSnake.slice();
+          isHidden = false;
+        }, 2000);
+
 
       } else if (ateApple()) {
 
@@ -227,33 +247,20 @@ const Snake = ( () => {
 
       }
 
-    } else {
-
-
 
     }
 
+    drawGame();
+
+    setTimeout(gameLoop, 1000 / FPS);
   }
 
   function init() {
-
-    function gameLoop() {
-      if (isPlaying) {
-        moveSnake();
-        gameLogic();
-        drawGame();
-      }
-
-      setTimeout(() => {
-        gameLoop();
-      }, Math.floor(1000 / FPS));
-    }
 
     resize();
     setScore(0);
     takeInput();
     randomizeApple();
-    drawGame();
     gameLoop();
 
   }
@@ -263,8 +270,5 @@ const Snake = ( () => {
   }
 
 })();
-
-const COLOR = window.location.href.split('?')[1];
-document.getElementById('gameboy-body').style.backgroundColor = COLOR;
 
 Snake.init();
