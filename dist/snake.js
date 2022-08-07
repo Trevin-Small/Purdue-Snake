@@ -15,7 +15,7 @@ const Snake = ( () => {
   let gridBoxMargins = 2;
   let gridDimension = 10;
   let windowBorder = 2;
-  let canvasBorder = 3;
+  let canvasBorder = 5;
 
   const gameContainer = document.getElementById('game-container');
   const gameWindow = document.getElementById('game-window');
@@ -49,8 +49,6 @@ const Snake = ( () => {
     gameCanvas.width = gameCanvas.height = (windowDimension - canvasBorder * 2);
 
     gridBoxSize = gameCanvas.width / gridDimension;
-
-    textInfo.style.width = windowDimension - 12 + "px";
 
     window.addEventListener("resize", () => {
       resize();
@@ -144,11 +142,11 @@ const Snake = ( () => {
 
     if (newHead[0] < 0) {
       newHead[0] = gridDimension - 1;
-    } else if (newHead[0] > gridDimension) {
+    } else if (newHead[0] > gridDimension - 1) {
       newHead[0] = 0;
     } else if (newHead[1] < 0) {
       newHead[1] = gridDimension - 1;
-    } else if (newHead[1] > gridDimension) {
+    } else if (newHead[1] > gridDimension - 1) {
       newHead[1] = 0;
     }
 
@@ -201,7 +199,7 @@ const Snake = ( () => {
 
   function setScore(newScore) {
     if (newScore != 0) {
-      FPS++;
+      FPS += 0.25;
     } else {
       FPS = 5;
     }
@@ -252,6 +250,7 @@ const Snake = ( () => {
     }
 
     resize();
+    setScore(0);
     takeInput();
     randomizeApple();
     drawGame();

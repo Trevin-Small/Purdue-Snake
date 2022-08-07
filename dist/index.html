@@ -5,13 +5,13 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Purdue Snake</title>
   <link rel="stylesheet" href="./main.css" type="text/css" />
   <link rel="script" href="./snake.js" />
 
 </head>
-<body class="bg-black w-screen h-screen flex flex-col items-center" style="padding: calc(env(safe-area-inset-top) + 1rem) 1rem calc(env(safe-area-inset-bottom) + 1rem) 1rem;overflow:hidden;">
+<body class="bg-black w-screen h-screen flex flex-col items-center" style="padding: 1rem 1rem calc(env(safe-area-inset-bottom) + 1rem) 1rem;overflow:hidden;">
   <div class="w-full h-full m-0 flex flex-col items-center rounded-3xl" style="max-width:500px;max-height:750px;" id="gameboy-body">
 
     <div class="bgp-gold w-full h-auto self-start flex flex-col justify-center items-center p-1 rounded-t-3xl">
@@ -26,11 +26,11 @@
 
     <div class="w-full flex flex-col justify-center items-center flex-grow self-start text-white p-0" id="game-container">
       <div class="bgp-black m-0 p-0 border-2 w-10 h-10 border-white rounded-xl flex flex-col justify-center items-center" id="game-window">
-        <canvas id="game-canvas" class="rounded-xl m-0 p-0"></canvas>
+        <canvas id="game-canvas" class="rounded-m m-0 p-0"></canvas>
       </div>
 
-      <div class="flex flex-row justify-center items-center" style="margin-top:4px;" id="text-info">
-        <p>Score: 0</p>
+      <div class="flex flex-row justify-center items-center" style="margin-top:4px;">
+        <p id="score"></p>
       </div>
 
     </div>
