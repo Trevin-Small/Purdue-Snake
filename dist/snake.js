@@ -19,8 +19,11 @@ const Snake = ( () => {
   let windowBorder = 2;
   let canvasBorder = 5;
 
-  const COLOR = window.location.href.split('?')[1];
-  document.getElementById('gameboy-body').style.backgroundColor = COLOR;
+  let color = window.location.href.split('?')[1];
+  if (color.length == 0) {
+    color = "#ffffff";
+  }
+  document.getElementById('gameboy-body').style.backgroundcolor = color;
 
   const gameContainer = document.getElementById('game-container');
   const gameWindow = document.getElementById('game-window');
@@ -69,7 +72,7 @@ const Snake = ( () => {
       if (i != 0) {
         ctx.fillStyle = 'white';
       } else {
-        ctx.fillStyle = COLOR;
+        ctx.fillStyle = color;
       }
       ctx.rect(snake[i][0] * gridBoxSize + gridBoxMargins, snake[i][1] * gridBoxSize + gridBoxMargins, gridBoxSize - gridBoxMargins, gridBoxSize - gridBoxMargins);
       ctx.fill();
