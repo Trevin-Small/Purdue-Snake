@@ -81,7 +81,7 @@ const Snake = ( () => {
 
     ctx.beginPath();
     //ctx.drawImage(trainImage, apple[0] * gridBoxSize, apple[1] * gridBoxSize, gridBoxSize, gridBoxSize);
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = 'yellow';
     ctx.rect(apple[0] * gridBoxSize + gridBoxMargins, apple[1] * gridBoxSize + gridBoxMargins, gridBoxSize - gridBoxMargins, gridBoxSize - gridBoxMargins);
     ctx.fill();
 
