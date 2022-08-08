@@ -34,6 +34,7 @@ const Snake = ( () => {
   ctx.lineWidth = 0;
   const keyboardContainer = document.getElementById('keyboard-container');
   const gameContainerBorders = 2 * (2 * pxToREM);
+  const GAME_OVER_DELAY = 3000;
 
   function resize() {
     keyboardContainer.style.width = keyboardContainer.offsetHeight + "px";
@@ -111,17 +112,24 @@ const Snake = ( () => {
 
     document.addEventListener('keydown', (event) => {
       console.log(event.code);
-      if (event.code == '37'){
-        direction == 3;
-      } else if (event.code == '38'){
-        direction == 0;
-      } else if (event.code == '39'){
-        direction == 1;
-      } else if (event.code == '40'){
-        direction == 2;
+      if (event.code === 'ArrowRight' || event.code === 'KeyD'){
+        if (prevDirectionMoved != 3){
+          direction = 1;
+        }
+      } else if (event.code == 'ArrowUp' || event.code === 'KeyW'){
+        if (prevDirectionMoved != 2){
+          direction = 0;
+        }
+      } else if (event.code == 'ArrowLeft' || event.code === 'KeyA'){
+        if (prevDirectionMoved != 1){
+          direction = 3;
+        }
+      } else if (event.code == 'ArrowDown' || event.code === 'KeyS'){
+        if (prevDirectionMoved != 0 && direction != 4){
+          direction = 2;
+        }
       }
     });
-
 
   }
 
@@ -240,7 +248,7 @@ const Snake = ( () => {
           isPlaying = true;
           snake = defaultSnake.slice();
           isHidden = false;
-        }, 2000);
+        }, GAME_OVER_DELAY);
 
 
       } else if (ateApple()) {
