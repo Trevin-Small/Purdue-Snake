@@ -22,7 +22,7 @@ const Snake = ( () => {
   let color = window.location.href.split('?')[1];
   console.log("Color: " + color);
   if (color == null || color == undefined || color.length != 7) {
-    color = "#28b5b3";
+    color = "#2f95de";
   }
   document.getElementById('gameboy-body').style.backgroundColor = color;
 
