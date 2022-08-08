@@ -20,7 +20,8 @@ const Snake = ( () => {
   let canvasBorder = 5;
 
   let color = window.location.href.split('?')[1];
-  if (color != null && color.length != 7) {
+  console.log("Color: " + color);
+  if (color == null || color == undefined || color.length != 7) {
     color = "#28b5b3";
   }
   document.getElementById('gameboy-body').style.backgroundColor = color;
