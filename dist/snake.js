@@ -239,6 +239,7 @@ const Snake = ( () => {
       if (ranIntoSelf()) {
 
         direction = 4;
+        prevDirectionMoved = 4;
         isPlaying = false;
         isHidden = true;
         addSnakeSection = false;
@@ -248,6 +249,8 @@ const Snake = ( () => {
           isPlaying = true;
           snake = defaultSnake.slice();
           isHidden = false;
+          direction = 4;
+          prevDirectionMoved = 4;
         }, GAME_OVER_DELAY);
 
 
